@@ -12,11 +12,11 @@ var posts = [
   { id: '4', day: 'Thursday', task: 'Learn SASS' },
 ];
 
-app.get('/', function (request, response) {
+app.get('/posts', function (request, response) {
   response.send(posts);
 });
 
-app.post('/post', function (request, response) {
+app.post('/posts', function (request, response) {
   var post = request.body;
   if (!post || post.day === '' || post.task === '') {
     response
@@ -25,6 +25,24 @@ app.post('/post', function (request, response) {
   } else {
     posts.push(post);
     response.status(200).send(post);
+  }
+});
+
+app.put('/post/:postId', function (request, response) {
+  var newTask = request.body.task;
+  var newDay = request.body.day;
+
+  if (!newTask || newTask === '' || !newDay || newDay === '') {
+    response.status(500).send({ error: 'You must povide post task and day' });
+  } else {
+    for (var x = 0; x < posts; x++) {
+      var toDo = posts[x];
+      if (toDo.id === request.params.postId) {
+        posts[x].task = newTask;
+        break;
+      }
+    }
+    response.send(posts);
   }
 });
 
