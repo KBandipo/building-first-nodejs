@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-var posts = [
+var postsData = [
   { id: '1', day: 'Monday', task: 'Learn React' },
   { id: '2', day: 'Tuesday', task: 'Learn Next.js' },
   { id: '3', day: 'Wednesday', task: 'Learn Node.js' },
@@ -13,12 +13,12 @@ var posts = [
 ];
 
 app.get('/posts', function (request, response) {
-  response.send(posts);
+  response.send(postsData);
 });
 
 app.post('/posts', function (request, response) {
   var post = request.body;
-  if (!post || post.day === '' || post.task === '') {
+  if (!post || !post.day || post.day === '' || !post.task || post.task === '') {
     response
       .status(500)
       .send({ error: "You can't send an empty text for the day and task" });
@@ -28,21 +28,28 @@ app.post('/posts', function (request, response) {
   }
 });
 
-app.put('/post/:postId', function (request, response) {
+app.put('/posts/:postId', function (request, response) {
   var newTask = request.body.task;
   var newDay = request.body.day;
 
   if (!newTask || newTask === '' || !newDay || newDay === '') {
     response.status(500).send({ error: 'You must povide post task and day' });
   } else {
-    for (var x = 0; x < posts; x++) {
-      var toDo = posts[x];
+    var objectFound = false;
+    for (var x = 0; x < postsData.length; x++) {
+      var toDo = postsData[x];
       if (toDo.id === request.params.postId) {
-        posts[x].task = newTask;
+        postsData[x].task = newTask;
+        postsData[x].day = newDay;
+        objectFound = true;
         break;
       }
     }
-    response.send(posts);
+    if (!objectFound) {
+      response.status(500).send({ error: 'Postid not found' });
+    } else {
+      response.send(postsData);
+    }
   }
 });
 
