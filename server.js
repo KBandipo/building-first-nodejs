@@ -23,7 +23,7 @@ app.post('/posts', function (request, response) {
       .status(500)
       .send({ error: "You can't send an empty text for the day and task" });
   } else {
-    posts.push(post);
+    postsData.push(post);
     response.status(200).send(post);
   }
 });
@@ -50,6 +50,18 @@ app.put('/posts/:postId', function (request, response) {
     } else {
       response.send(postsData);
     }
+  }
+});
+
+app.delete('/posts/:postId', function (request, response) {
+  postId = request.params.postId;
+  var initialLength = postsData.length;
+  postsData = postsData.filter((post) => post.id !== postId);
+
+  if (initialLength === postsData.length) {
+    response.status(404).send({ error: 'Post id not found' });
+  } else {
+    response.status(200).send({ message: 'Post successful', posts: postsData });
   }
 });
 
