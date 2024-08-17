@@ -12,10 +12,12 @@ var postsData = [
   { id: '4', day: 'Thursday', task: 'Learn SASS' },
 ];
 
+// Handle Get Request
 app.get('/posts', function (request, response) {
   response.send(postsData);
 });
 
+// Handle Post Request
 app.post('/posts', function (request, response) {
   var post = request.body;
   if (!post || !post.day || post.day === '' || !post.task || post.task === '') {
@@ -28,6 +30,7 @@ app.post('/posts', function (request, response) {
   }
 });
 
+// Handle Put Request
 app.put('/posts/:postId', function (request, response) {
   var newTask = request.body.task;
   var newDay = request.body.day;
@@ -53,6 +56,7 @@ app.put('/posts/:postId', function (request, response) {
   }
 });
 
+// Handle Delete Request
 app.delete('/posts/:postId', function (request, response) {
   postId = request.params.postId;
   var initialLength = postsData.length;
